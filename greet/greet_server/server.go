@@ -5,7 +5,7 @@ import (
 	"log"
 	"net"
 
-	"github.com/kanana1024/grpc-go/greet/greetpb"
+	"github.com/kangana1024/grpc-go/greet/greetpb"
 	"google.golang.org/grpc"
 )
 
