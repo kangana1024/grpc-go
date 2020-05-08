@@ -5,6 +5,7 @@ import (
 	"log"
 	"net"
 
+	"github.com/kanana1024/grpc-go/greet/greetpb"
 	"google.golang.org/grpc"
 )
 
@@ -23,4 +24,7 @@ func main() {
 
 	greetpb.RegisterGreetServiceServer(s, &server{})
 
+	if err := s.Serve(lis); err != nil {
+		log.Fatalf("Failed to server: %v", err)
+	}
 }
