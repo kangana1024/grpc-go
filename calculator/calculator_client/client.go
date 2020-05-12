@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
 	"log"
 
 	"github.com/kangana1024/grpc-go/calculator/calculatorpb"
@@ -20,7 +21,30 @@ func main() {
 	defer conn.Close()
 	c := calculatorpb.NewCalculatorServiceClient(conn)
 
-	doUnary(c)
+	// doUnary(c)
+	doServerStreaming(c)
+}
+func doServerStreaming(c calculatorpb.CalculatorServiceClient) {
+	fmt.Println("Starting to do a PrimeNumberDecomposition unary RPC...")
+	req := &calculatorpb.PrimeNumberDecompositionRequest{
+		Number: 12390392840,
+	}
+	stream, err := c.PrimeNumberDecomposition(context.Background(), req)
+	if err != nil {
+		log.Fatalf("error while call PrimeNumberDecomposition rpc: %v", err)
+	}
+
+	for {
+		res, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Fatalf("Something happened : %v", err)
+		}
+
+		fmt.Printf("Response : %v\n", res.GetPrimeFactor())
+	}
 }
 
 func doUnary(c calculatorpb.CalculatorServiceClient) {
